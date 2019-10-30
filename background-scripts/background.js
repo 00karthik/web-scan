@@ -26,3 +26,29 @@ if (window.chrome.webRequest && window.chrome.webRequest.onCompleted) {
     ['responseHeaders'],
   );
 }
+
+function changeIcon(tabId, interval, loading, cb) {
+  window.chrome.tabs.sendMessage(tabId, { type: 'getLibraries' }, (data) => {
+    if (data && data.loading) {
+      cb(true);
+    } else if (data && data.libraries && data.libraries.length && !loading) {
+      cb(false);
+      window.chrome.browserAction.setIcon({ path: `./icons/${data.libraries[0].icon}.png` });
+      if (interval) {
+        clearInterval(interval);
+      }
+    }
+  });
+}
+
+window.chrome.tabs.onActivated.addListener((activeInfo) => {
+  let prevLoadingState = false;
+  changeIcon(activeInfo.tabId, null, prevLoadingState, (loading) => {
+    prevLoadingState = loading;
+  });
+  const interval = setInterval(() => {
+    changeIcon(activeInfo.tabId, interval, prevLoadingState, (state) => {
+      prevLoadingState = state;
+    });
+  }, 500);
+});
