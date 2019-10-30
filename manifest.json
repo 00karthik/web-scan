@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "Web Scan - Find the webtechnologies used in webapps",
+  "short_name": "WebScan",
+  "version": "0.0.1",
+  "web_accessible_resources": ["detect.js"],
+  "description": "Finds the web technologies used in a building the website",
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "WebScan",
+    "default_icon": "icons/icon128.png"
+  },
+  "permissions": ["storage", "tabs", "http://*/*", "https://*/*"],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "background": {
+    "persistent": false,
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
