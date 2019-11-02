@@ -38,6 +38,10 @@ function createLoader() {
 }
 
 function fetchContents(tabs, intervel, prevLoadingState, cb) {
+  if (tabs[0].url.includes('chrome://')) {
+    const container = document.getElementById('inject-elements');
+    container.innerHTML = '<p>webscan an js library analyzer</p>';
+  }
   window.chrome.tabs.sendMessage(tabs[0].id, { type: 'getLibraries' }, (data) => {
     const container = document.getElementById('inject-elements');
     if (data && data.loading && !(data.libraries && data.libraries.length) && !prevLoadingState) {

@@ -24,3 +24,5 @@ window.chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       console.error('Unrecognised message: ', message);
   }
 });
+
+window.chrome.runtime.sendMessage({ status: 'script-loaded' });

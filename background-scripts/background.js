@@ -27,28 +27,46 @@ if (window.chrome.webRequest && window.chrome.webRequest.onCompleted) {
   );
 }
 
-function changeIcon(tabId, interval, loading, cb) {
-  window.chrome.tabs.sendMessage(tabId, { type: 'getLibraries' }, (data) => {
-    if (data && data.loading) {
-      cb(true);
-    } else if (data && data.libraries && data.libraries.length && !loading) {
-      cb(false);
-      window.chrome.browserAction.setIcon({ path: `./icons/${data.libraries[0].icon}.png` });
-      if (interval) {
-        clearInterval(interval);
+function changeIcon(tabId, url) {
+  if (url.includes('devtools://')) {
+    return;
+  }
+  if (url.includes('chrome://')) {
+    window.chrome.browserAction.setIcon({ path: './icons/icon38.png' });
+  } else {
+    window.chrome.tabs.sendMessage(tabId, { type: 'getLibraries' }, (data) => {
+      if (data && data.libraries && data.libraries.length) {
+        window.chrome.browserAction.setIcon({ path: `./icons/${data.libraries[0].icon}.png` });
       }
-    }
-  });
+    });
+  }
 }
 
-window.chrome.tabs.onActivated.addListener((activeInfo) => {
-  let prevLoadingState = false;
-  changeIcon(activeInfo.tabId, null, prevLoadingState, (loading) => {
-    prevLoadingState = loading;
-  });
-  const interval = setInterval(() => {
-    changeIcon(activeInfo.tabId, interval, prevLoadingState, (state) => {
-      prevLoadingState = state;
+window.chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.status === 'complete') {
+    window.chrome.tabs.getSelected(null, (tab) => {
+      if (tab) {
+        changeIcon(tabId, tab.url);
+      }
     });
-  }, 500);
+  }
+});
+
+window.chrome.tabs.onActivated.addListener((activeInfo) => {
+  window.chrome.tabs.getSelected(null, (tab) => {
+    if (tab) {
+      changeIcon(activeInfo.tabId, tab.url);
+    }
+  });
+});
+
+window.chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.status === 'hellscript-loaded') {
+    console.log(sender.tab.url);
+    window.chrome.tabs.getSelected(null, (tab) => {
+      if (tab && tab.id === sender.tab.url) {
+        changeIcon(tab.id, tab.url);
+      }
+    });
+  }
 });
