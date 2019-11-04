@@ -2,17 +2,24 @@
   width: 300px;
   max-height: 200px;
   font-family: 'Roboto', sans-serif;
-  margin: 0;
+  margin: 5px;
+  background: #333;
 }
 
 .heading {
-  font-size: 17px;
+  font-size: 16px;
   padding: 10px 15px;
-  background: #969594;
   margin: 0;
   font-weight: 500;
+  color: #527e9e;
+  border-bottom: 1px solid;
 }
 
+#inject-elements {
+  border-top: 1px solid;
+  color: #808080;
+  padding: 10px;
+}
 .loading-wrapper {
   height: 100px;
   text-align: center;
@@ -55,13 +62,38 @@
   text-transform: capitalize;
 }
 
+.version {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #527e9e;
+
+  /* Required for text-overflow to do anything */
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.left-container {
+  max-width: 150px;
+  text-overflow: ellipsis;
+
+  /* Required for text-overflow to do anything */
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .lib-wrap {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding-right: 10px;
   text-decoration: none;
   cursor: pointer;
-  color: black;
-  width: 50%;
+  color: #527e9e;
+  width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

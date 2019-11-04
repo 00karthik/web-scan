@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
-  "name": "Web Scan - Find the webtechnologies used in webapps",
+  "name": "Web Scan - Web technology lookup",
   "short_name": "WebScan",
   "version": "0.0.1",
   "web_accessible_resources": ["detect.js"],
-  "description": "Finds the web technologies used in a building the website",
+  "description": "Find the web platform in a which websites are built",
   "icons": {
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"

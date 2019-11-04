@@ -31,7 +31,7 @@ async function startApp() {
     libraries,
   });
 }
-
+startApp();
 window.onload = () => {
   startApp();
 };

@@ -35,8 +35,20 @@ function changeIcon(tabId, url) {
     window.chrome.browserAction.setIcon({ path: './icons/icon38.png' });
   } else {
     window.chrome.tabs.sendMessage(tabId, { type: 'getLibraries' }, (data) => {
-      if (data && data.libraries && data.libraries.length) {
+      if (data && data.libraries && data.libraries.length && !data.loading) {
         window.chrome.browserAction.setIcon({ path: `./icons/${data.libraries[0].icon}.png` });
+      } else if (data.loading) {
+        setTimeout(() => {
+          window.chrome.tabs.sendMessage(tabId, { type: 'getLibraries' }, (data) => {
+            if (data && data.libraries && data.libraries.length && !data.loading) {
+              window.chrome.browserAction.setIcon({
+                path: `./icons/${data.libraries[0].icon}.png`,
+              });
+            }
+          });
+        }, 2000);
+      } else {
+        window.chrome.browserAction.setIcon({ path: './icons/icon38.png' });
       }
     });
   }
@@ -60,13 +72,42 @@ window.chrome.tabs.onActivated.addListener((activeInfo) => {
   });
 });
 
-window.chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.status === 'hellscript-loaded') {
-    console.log(sender.tab.url);
-    window.chrome.tabs.getSelected(null, (tab) => {
-      if (tab && tab.id === sender.tab.url) {
-        changeIcon(tab.id, tab.url);
-      }
+// Add a `manifest` property to the `chrome` object.
+window.chrome.manifest = window.chrome.app.getDetails();
+
+function injectIntoTab(tab) {
+  // You could iterate through the content scripts here
+  const scripts = window.chrome.manifest.content_scripts[0].js;
+  let i = 0;
+  const s = scripts.length;
+  for (; i < s; i += 1) {
+    window.chrome.tabs.executeScript(tab.id, {
+      file: scripts[i],
     });
   }
-});
+}
+
+// Get all windows
+window.chrome.windows.getAll(
+  {
+    populate: true,
+  },
+  (windows) => {
+    let i = 0;
+    const w = windows.length;
+    let currentWindow;
+    for (; i < w; i += 1) {
+      currentWindow = windows[i];
+      let j = 0;
+      const t = currentWindow.tabs.length;
+      let currentTab;
+      for (; j < t; j += 1) {
+        currentTab = currentWindow.tabs[j];
+        // Skip chrome:// and https:// pages
+        if (!currentTab.url.match(/(chrome):\/\//gi)) {
+          injectIntoTab(currentTab);
+        }
+      }
+    }
+  },
+);

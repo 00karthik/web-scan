@@ -11,19 +11,30 @@ function injectLibrary(library) {
   wrapper.className = 'lib-wrap';
   const name = document.createElement('span');
   name.className = 'name';
-  name.innerText = `${library.name} ${library.version ? library.version : ''}`;
+  name.innerText = `${library.name}`;
+  const leftWrapper = document.createElement('div');
+  leftWrapper.className = 'left-container';
+  const version = document.createElement('span');
+  version.className = 'version';
+  version.innerText = ` ${library.version}`;
 
   const image = document.createElement('img');
   image.className = 'lib-icon';
   image.src = `./icons/${library.icon}.png`;
-  wrapper.append(image);
-  wrapper.append(name);
+
+  leftWrapper.append(image);
+  leftWrapper.append(name);
+  wrapper.append(leftWrapper);
+  if (library.version) {
+    wrapper.append(version);
+  }
   return wrapper;
 }
 
 function createLibraryList(libraries) {
   const wrapper = document.createElement('div');
   wrapper.className = 'container';
+
   libraries.forEach((library) => {
     wrapper.append(injectLibrary(library));
   });
@@ -40,7 +51,9 @@ function createLoader() {
 function fetchContents(tabs, intervel, prevLoadingState, cb) {
   if (tabs[0].url.includes('chrome://')) {
     const container = document.getElementById('inject-elements');
-    container.innerHTML = '<p>webscan an js library analyzer</p>';
+    container.innerHTML = '<p>Find the libraries used in websites</p>';
+    const heading = document.getElementById('heading');
+    heading.innerText = 'Webscan';
   }
   window.chrome.tabs.sendMessage(tabs[0].id, { type: 'getLibraries' }, (data) => {
     const container = document.getElementById('inject-elements');
