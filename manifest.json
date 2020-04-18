@@ -14,7 +14,7 @@
     "default_title": "WebScan",
     "default_icon": "icons/icon.png"
   },
-  "permissions": ["storage", "tabs", "http://*/*", "https://*/*"],
+  "permissions": [ "tabs", "http://*/*", "https://*/*"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "background": {
     "persistent": false,
