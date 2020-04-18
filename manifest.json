@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
   "name": "Web Scan - Web technology lookup",
-  "short_name": "WebScan",
+  "short_name": "WebScan - Library detection tool",
   "version": "0.0.1",
   "web_accessible_resources": ["detect.js"],
-  "description": "Find the web platform in a which websites are built",
+  "description": "Discover the libraries and web technologies in any websites",
   "icons": {
     "48": "icons/icon.png",
     "128": "icons/icon.png"

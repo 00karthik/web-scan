@@ -32,7 +32,7 @@ function changeIcon(tabId, url) {
     return;
   }
   if (url.includes('chrome://')) {
-    window.chrome.browserAction.setIcon({ path: './icons/icon38.png' });
+    window.chrome.browserAction.setIcon({ path: './icons/icon.png' });
   } else {
     window.chrome.tabs.sendMessage(tabId, { type: 'getLibraries' }, (data) => {
       if (data && data.libraries && data.libraries.length && !data.loading) {
@@ -48,7 +48,7 @@ function changeIcon(tabId, url) {
           });
         }, 2000);
       } else {
-        window.chrome.browserAction.setIcon({ path: './icons/icon38.png' });
+        window.chrome.browserAction.setIcon({ path: './icons/icon.png' });
       }
     });
   }
