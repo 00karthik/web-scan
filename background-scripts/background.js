@@ -37,7 +37,7 @@ function changeIcon(tabId, url) {
     window.chrome.tabs.sendMessage(tabId, { type: 'getLibraries' }, (data) => {
       if (data && data.libraries && data.libraries.length && !data.loading) {
         window.chrome.browserAction.setIcon({ path: `./icons/${data.libraries[0].icon}.png` });
-      } else if (data.loading) {
+      } else if (data && data.loading) {
         setTimeout(() => {
           window.chrome.tabs.sendMessage(tabId, { type: 'getLibraries' }, (data) => {
             if (data && data.libraries && data.libraries.length && !data.loading) {

@@ -14,17 +14,18 @@ const testRules = {
       const hasBodyEventBits = doc.body.__eventBits;
       const hasModules = win.__gwt_activeModules;
       const hasJsonP = win.__gwt_jsonp__;
-      const hasRootWinApp = win.__gwt_scriptsLoaded || win.__gwt_stylesLoaded || win.__gwt_activeModules;
+      const hasRootWinApp =
+        win.__gwt_scriptsLoaded || win.__gwt_stylesLoaded || win.__gwt_activeModules;
 
       // use the many possible indicators
       if (
-        hasHistFrame
-        || hasGwtUid
-        || hasBodyListener
-        || hasBodyEventBits
-        || hasModules
-        || hasJsonP
-        || hasRootWinApp
+        hasHistFrame ||
+        hasGwtUid ||
+        hasBodyListener ||
+        hasBodyEventBits ||
+        hasModules ||
+        hasJsonP ||
+        hasRootWinApp
       ) {
         // carefully look at frames, but only if certain is GWT frame
         const frames = doc.getElementsByTagName('iframe');
@@ -34,15 +35,15 @@ const testRules = {
           try {
             const hasNegativeTabIndex = frames[n].tabIndex < 0; // on for GWT
             if (
-              hasNegativeTabIndex
-              && frames[n].contentWindow
-              && frames[n].contentWindow.$gwt_version
+              hasNegativeTabIndex &&
+              frames[n].contentWindow &&
+              frames[n].contentWindow.$gwt_version
             ) {
               gwtVersion = frames[n].contentWindow.$gwt_version;
               break;
             }
           } catch (e) {
-            console.log(e);
+            // console.log(e);
           }
         }
 
@@ -241,7 +242,6 @@ const testRules = {
     },
   },
 
-
   'jQuery UI': {
     id: 'jquery_ui',
     icon: 'jquery_ui',
@@ -435,21 +435,21 @@ const testRules = {
       const reactRoot = document.getElementById('react-root');
       const altHasReact = document.querySelector('*[data-reactroot]');
       const bodyReactRoot = isMatch(document.body) || isMatch(document.body.firstElementChild);
-      const hasReactRoot = bodyReactRoot
-        || document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT, nodeFilter).nextNode()
-          != null;
+      const hasReactRoot =
+        bodyReactRoot ||
+        document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT, nodeFilter).nextNode() !=
+          null;
       if (
-        hasReactRoot
-        || (reactRoot && reactRoot.innerText.length > 0)
-        || altHasReact
-        || (win.React && win.React.Component)
+        hasReactRoot ||
+        (reactRoot && reactRoot.innerText.length > 0) ||
+        altHasReact ||
+        (win.React && win.React.Component)
       ) {
         return { version: (win.React && win.React.version) || UNKNOWN_VERSION };
       }
       return false;
     },
   },
-
 
   'Next.js': {
     id: 'next',
@@ -464,7 +464,6 @@ const testRules = {
     },
   },
 
-
   Preact: {
     id: 'preact',
     icon: 'preact',
@@ -474,9 +473,9 @@ const testRules = {
       const expando = typeof Symbol !== 'undefined' && Symbol.for && Symbol.for('preactattr');
       function isMatch(node) {
         return (
-          node._component != null
-          || node.__preactattr_ != null
-          || (expando && node[expando] != null)
+          node._component != null ||
+          node.__preactattr_ != null ||
+          (expando && node[expando] != null)
         );
       }
       function getMatch(node) {
@@ -501,7 +500,6 @@ const testRules = {
       return false;
     },
   },
-
 
   Modernizr: {
     id: 'modernizr',
@@ -577,11 +575,13 @@ const testRules = {
     test(win) {
       var _ = typeof (_ = win._) === 'function' && _;
       var chain = typeof (chain = _ && _.chain) === 'function' && chain;
-      const wrapper = (chain
-        || _
-        || function () {
+      const wrapper = (
+        chain ||
+        _ ||
+        function() {
           return {};
-        })(1);
+        }
+      )(1);
 
       if (_ && wrapper.__wrapped__) {
         return { version: _.VERSION || UNKNOWN_VERSION };
@@ -862,12 +862,12 @@ const testRules = {
     test(win) {
       const req = win.require || win.requirejs;
       if (
-        req
-        && (req.load
-          || (req.s
-            && req.s.contexts
-            && req.s.contexts._
-            && (req.s.contexts._.loaded || req.s.contexts._.load)))
+        req &&
+        (req.load ||
+          (req.s &&
+            req.s.contexts &&
+            req.s.contexts._ &&
+            (req.s.contexts._.loaded || req.s.contexts._.load)))
       ) {
         return { version: req.version || UNKNOWN_VERSION };
       }
@@ -1102,7 +1102,6 @@ const testRules = {
     },
   },
 
-
   'Hammer.js': {
     id: 'hammerjs',
     icon: 'hammerjs',
@@ -1260,8 +1259,9 @@ const testRules = {
       function isVueNode(node) {
         return node.__vue__ != null ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
       }
-      const hasVueNode = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT, isVueNode).nextNode()
-        !== null;
+      const hasVueNode =
+        document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT, isVueNode).nextNode() !==
+        null;
       if (hasVueNode) {
         return { version: (win.Vue && win.Vue.version) || UNKNOWN_VERSION };
       }
@@ -1536,7 +1536,7 @@ const testRules = {
       // Same detecton used in Magento 2 DevTools: https://github.com/magento/m2-devtools
       const reRequireScript = /\/static(?:\/version\d+)?\/frontend\/.+\/.+\/requirejs\/require(?:\.min)?\.js/;
       const scripts = Array.from(win.document.querySelectorAll('script[src]') || []);
-      if (scripts.some(s => reRequireScript.test(s.src))) {
+      if (scripts.some((s) => reRequireScript.test(s.src))) {
         return { version: 2 }; // Magento 1 is no longer supported and this only verifies version 2
       }
 
@@ -1556,7 +1556,9 @@ const testRules = {
 
       if (!hasAPILinkElem && !hasWPIncludes) return false;
 
-      const generatorMeta = win.document.querySelector('meta[name=generator][content^="WordPress"]');
+      const generatorMeta = win.document.querySelector(
+        'meta[name=generator][content^="WordPress"]',
+      );
       const version = generatorMeta
         ? generatorMeta.getAttribute('content').replace(/^\w+\s/, '')
         : UNKNOWN_VERSION;
@@ -1594,7 +1596,7 @@ const testRules = {
             credentials: 'include',
             headers: { 'service-worker': 'script' },
           })
-            .then(response => response.text())
+            .then((response) => response.text())
             .then((scriptContent) => {
               const workboxRegExp = /new Workbox|new workbox|workbox\.precaching\.|workbox\.strategies/gm;
               if (workboxRegExp.test(scriptContent)) {
@@ -1650,7 +1652,7 @@ const testRules = {
         const { versions } = shared;
         return {
           version: Array.isArray(versions)
-            ? versions.map(it => `${it.version}: ${it.mode}`).join(', ')
+            ? versions.map((it) => `${it.version}: ${it.mode}`).join(', ')
             : UNKNOWN_VERSION,
         };
       }
@@ -1673,7 +1675,8 @@ const testRules = {
         const manifest = await response.json();
 
         const hasFilesEntrypoints = manifest.files || manifest.entrypoints;
-        const containsMainBundle = manifest['main.js'] || (manifest.files && manifest.files['main.js']);
+        const containsMainBundle =
+          manifest['main.js'] || (manifest.files && manifest.files['main.js']);
 
         if (hasFilesEntrypoints || containsMainBundle) {
           return { version: UNKNOWN_VERSION };
